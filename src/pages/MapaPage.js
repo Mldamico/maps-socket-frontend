@@ -5,13 +5,14 @@ mapboxgl.accessToken =
   "pk.eyJ1IjoiYXJlY3l1cyIsImEiOiJja2o5eG41YWc0MDcyMnJtMGM2M2ZkYmJwIn0.akEmx2junt8OndcUHAsokA";
 
 const puntoInicial = {
-  lng: 5,
-  lat: 34,
-  zoom: 2
+  lng: -58.5456,
+  lat: -34.5969,
+  zoom: 17
 };
 
 export const MapaPage = () => {
   const [mapa, setMapa] = useState(null);
+  const [coords, setCoords] = useState(puntoInicial);
   const mapaDiv = useRef();
   useEffect(() => {
     const map = new mapboxgl.Map({
@@ -22,8 +23,23 @@ export const MapaPage = () => {
     });
     setMapa(map);
   }, []);
+
+  useEffect(() => {
+    mapa?.on("move", () => {
+      const { lng, lat } = mapa.getCenter();
+      setCoords({
+        lng: lng.toFixed(4),
+        lat: lat.toFixed(4),
+        zoom: mapa.getZoom().toFixed(2)
+      });
+    });
+    return mapa?.off("move");
+  }, [mapa]);
   return (
     <>
+      <div className="infoWindow">
+        Lng: {coords.lng} | lat: {coords.lat} | zoom: {coords.zoom}
+      </div>
       <div className="mapContainer" ref={mapaDiv}></div>
     </>
   );
