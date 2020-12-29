@@ -1,5 +1,6 @@
 import { useRef, useEffect, useCallback, useState } from "react";
 import mapboxgl from "mapbox-gl";
+import { v4 } from "uuid";
 
 export const useMapbox = puntoInicial => {
   const mapaDiv = useRef();
@@ -8,7 +9,7 @@ export const useMapbox = puntoInicial => {
   }, []);
   const mapa = useRef(null);
   const [coords, setCoords] = useState(puntoInicial);
-
+  const marcadores = useRef({});
   useEffect(() => {
     const map = new mapboxgl.Map({
       container: mapaDiv.current,
@@ -31,5 +32,18 @@ export const useMapbox = puntoInicial => {
     return mapa.current?.off("move");
   }, []);
 
-  return { coords, setRef };
+  useEffect(() => {
+    mapa.current?.on("click", ev => {
+      const { lng, lat } = ev.lngLat;
+      const marker = new mapboxgl.Marker();
+      marker.id = v4();
+      marker
+        .setLngLat([lng, lat])
+        .addTo(mapa.current)
+        .setDraggable(true);
+      marcadores.current[marker.id] = marker;
+    });
+  }, []);
+
+  return { coords, setRef, marcadores };
 };
