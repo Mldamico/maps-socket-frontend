@@ -41,9 +41,9 @@ export const MapaPage = () => {
 
   useEffect(() => {
     socket.on('marcador-nuevo', (marcador) => {
-      console.log(marcador);
+      agregarMarcador(marcador, marcador.id);
     });
-  }, [socket]);
+  }, [socket, agregarMarcador]);
   return (
     <>
       <div className='infoWindow'>
