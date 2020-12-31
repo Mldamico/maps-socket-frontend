@@ -15,14 +15,16 @@ export const useMapbox = (puntoInicial) => {
   const movimientoMarcador = useRef(new Subject());
   const nuevoMarcador = useRef(new Subject());
 
-  const agregarMarcador = useCallback((ev) => {
-    const { lng, lat } = ev.lngLat;
+  const agregarMarcador = useCallback((ev, id) => {
+    const { lng, lat } = ev.lngLat || ev;
     const marker = new mapboxgl.Marker();
-    marker.id = v4();
+    marker.id = id ?? v4();
     marker.setLngLat([lng, lat]).addTo(mapa.current).setDraggable(true);
     marcadores.current[marker.id] = marker;
+    if (!id) {
+      nuevoMarcador.current.next({ id: marker.id, lng, lat });
+    }
 
-    nuevoMarcador.current.next({ id: marker.id, lng, lat });
     marker.on('drag', ({ target }) => {
       const { id } = target;
       const { lng, lat } = target.getLngLat();
