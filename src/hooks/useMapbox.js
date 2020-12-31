@@ -58,8 +58,13 @@ export const useMapbox = (puntoInicial) => {
     mapa.current?.on('click', agregarMarcador);
   }, [agregarMarcador]);
 
+  const actualizarPosicion = useCallback(({ id, lng, lat }) => {
+    marcadores.current[id].setLngLat([lng, lat]);
+  }, []);
+
   return {
     agregarMarcador,
+    actualizarPosicion,
     coords,
     setRef,
     marcadores,
