@@ -26,6 +26,7 @@ export const useMapbox = (puntoInicial) => {
     marker.on('drag', ({ target }) => {
       const { id } = target;
       const { lng, lat } = target.getLngLat();
+      movimientoMarcador.current.next({ id, lng, lat });
     });
   }, []);
 
@@ -61,5 +62,6 @@ export const useMapbox = (puntoInicial) => {
     setRef,
     marcadores,
     nuevoMarcador$: nuevoMarcador.current,
+    movimientoMarcador$: movimientoMarcador.current,
   };
 };

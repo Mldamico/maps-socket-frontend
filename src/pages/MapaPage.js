@@ -10,13 +10,20 @@ const puntoInicial = {
   zoom: 17,
 };
 export const MapaPage = () => {
-  const { coords, setRef, nuevoMarcador$ } = useMapbox(puntoInicial);
+  const { coords, setRef, nuevoMarcador$, movimientoMarcador$ } = useMapbox(
+    puntoInicial
+  );
 
   useEffect(() => {
     nuevoMarcador$.subscribe((marker) => {
       console.log(marker);
     });
   }, [nuevoMarcador$]);
+  useEffect(() => {
+    movimientoMarcador$.subscribe((marker) => {
+      console.log(marker);
+    });
+  }, [movimientoMarcador$]);
   return (
     <>
       <div className='infoWindow'>
