@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useMapbox } from '../hooks/useMapbox';
 import mapboxgl from 'mapbox-gl';
+import { SocketContext } from '../context/SocketContext';
 mapboxgl.accessToken =
   'pk.eyJ1IjoiYXJlY3l1cyIsImEiOiJja2o5eG41YWc0MDcyMnJtMGM2M2ZkYmJwIn0.akEmx2junt8OndcUHAsokA';
 
@@ -10,20 +11,27 @@ const puntoInicial = {
   zoom: 17,
 };
 export const MapaPage = () => {
+  const { socket } = useContext(SocketContext);
   const { coords, setRef, nuevoMarcador$, movimientoMarcador$ } = useMapbox(
     puntoInicial
   );
 
   useEffect(() => {
     nuevoMarcador$.subscribe((marker) => {
-      console.log(marker);
+      socket.emit('marcador-nuevo', marker);
     });
-  }, [nuevoMarcador$]);
+  }, [nuevoMarcador$, socket]);
   useEffect(() => {
     movimientoMarcador$.subscribe((marker) => {
       console.log(marker);
     });
   }, [movimientoMarcador$]);
+
+  useEffect(() => {
+    socket.on('marcador-nuevo', (marcador) => {
+      console.log(marcador);
+    });
+  }, [socket]);
   return (
     <>
       <div className='infoWindow'>
